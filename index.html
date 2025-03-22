@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM-LaTeX-Converter</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        h1 {
+            font-size: 2em;
+            color: #58a6ff;
+        }
+        p {
+            font-size: 1.1em;
+            line-height: 1.5;
+            color: #b0b0b0;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin: 10px 0;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+            border: 1px solid #444;
+            border-radius: 5px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        textarea[readonly] {
+            background-color: #252525;
+        }
+        .button-group {
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            background-color: #58a6ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #1e90ff;
+        }
+        #copyBtn {
+            background-color: #28a745;
+        }
+        #copyBtn:hover {
+            background-color: #218838;
+        }
+        #themeToggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #444;
+        }
+        #themeToggle:hover {
+            background-color: #666;
+        }
+        /* 浅色模式 */
+        body.light {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        body.light h1 {
+            color: #007bff;
+        }
+        body.light p {
+            color: #666;
+        }
+        body.light textarea {
+            background-color: #fff;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+        body.light textarea[readonly] {
+            background-color: #f8f8f8;
+        }
+        body.light button {
+            background-color: #007bff;
+        }
+        body.light button:hover {
+            background-color: #0056b3;
+        }
+        body.light #copyBtn {
+            background-color: #28a745;
+        }
+        body.light #copyBtn:hover {
+            background-color: #218838;
+        }
+        body.light #themeToggle {
+            background-color: #ccc;
+        }
+        body.light #themeToggle:hover {
+            background-color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <button id="themeToggle" onclick="toggleTheme()">黑夜/白天</button>
+    <h1>LLM-LaTeX-Converter</h1>
+    <p>大模型一般会用 \(和\) 包裹行内公式，用 \[和\] 包裹公式块。</p>
+    <p>本站将 \(...\) 和 \[...\] 转换为 $...$ 和 $$...$$，以支持常见 Markdown 编辑器。</p>
+    
+    <div class="container">
+        <h3>输入文本</h3>
+        <textarea id="input" placeholder="在此输入包含 \(...\) 和 [...] 的文本"></textarea>
+        
+        <div class="button-group">
+            <button onclick="convert()">转换</button>
+        </div>
+        
+        <h3>输出文本</h3>
+        <textarea id="output" readonly placeholder="转换后的结果将显示在这里"></textarea>
+        
+        <div class="button-group">
+            <button id="copyBtn" onclick="copyToClipboard()">复制到剪贴板</button>
+        </div>
+    </div>
+
+    <script>
+        function convert() {
+            const input = document.getElementById('input').value;
+            let output = input;
+
+            // 替换行内公式 \(...\) 为 $...$
+            output = output.replace(/\\\((.*?)\\\)/g, '$$$1$$');
+            
+            // 替换公式块 [...] 为 $$...$$
+            output = output.replace(/\\\[(.*?)\\\]/gs, '$$$$$1$$$$');
+
+            document.getElementById('output').value = output;
+        }
+
+        function copyToClipboard() {
+            const output = document.getElementById('output');
+            output.select();
+            document.execCommand('copy');
+            // alert('已复制到剪贴板');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+        }
+    </script>
+</body>
+</html>
